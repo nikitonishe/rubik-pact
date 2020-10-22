@@ -41,7 +41,10 @@ If you do not specify a host, then `https://api.pact.im/` will be used by defaul
 If you don't specify a token, you will need to pass it.
 ```js
 ...
-const response = await app.get('pact').debugToken();
+const response = await app.get('pact').companies.conversations.messages({
+  params: { companyId: '123',  },
+  body: { message: 'Test', conversationId: '1234' }
+});;
 ...
 ```
 
