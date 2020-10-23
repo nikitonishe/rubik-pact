@@ -49,6 +49,7 @@ class Pact extends Kubik {
     if (!params) params = {};
     if (params.companyId) path = path.replace('{{companyId}}', params.companyId);
     if (params.conversationId) path = path.replace('{{conversationId}}', params.conversationId);
+    if (params.channelId) path = path.replace('{{channelId}}', params.channelId);
 
     return `${host}p1/${path}`;
   }

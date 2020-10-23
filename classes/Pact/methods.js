@@ -1,4 +1,4 @@
 module.exports = [
-  { kubikName: 'companies.conversations', apiName: 'companies/{{companyId}}/conversations/{{conversationId}}' },
+  { kubikName: 'companies.channels.conversations', apiName: 'companies/{{companyId}}/channels/{{channelId}}/conversations' },
   { kubikName: 'companies.conversations.messages', apiName: 'companies/{{companyId}}/conversations/{{conversationId}}/messages' }
 ];
