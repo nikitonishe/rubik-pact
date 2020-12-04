@@ -27,6 +27,20 @@ describe('Кубик для работы с Pact', () => {
     expect(app.get('pact')).toBe(kubik);
   });
 
+  test('Пробует получить данные о беседе', async () => {
+    const { app } = get();
+    await app.up();
+    const dataForTests = app.config.get('dataForTests');
+
+    const response = await app.pact.companies.conversationsGet({
+      params: dataForTests,
+    })
+
+    expect(response.status).toBe('ok')
+
+    await app.down();
+  })
+
   test('Пробует отправить сообщение (не забудьте добавить токен в настройки)', async () => {
     const { app, kubik } = get();
     await app.up();
