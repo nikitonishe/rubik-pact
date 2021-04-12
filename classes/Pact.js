@@ -1,9 +1,9 @@
 const { Kubik } = require('rubik-main');
+const FormData = require('form-data');
 const fetch = require('node-fetch');
 const set = require('lodash/set');
 const isObject = require('lodash/isObject');
 const get = require('lodash/get');
-const querystring = require('querystring');
 
 const methods = require('./Pact/methods');
 
@@ -65,19 +65,22 @@ class Pact extends Kubik {
    */
   async request({ path, body, params, token, host }) {
     const url = this.getUrl({ path, params, host });
-    let method = 'GET';
 
     if (!token) token = this.token;
     const headers = { 'X-Private-Api-Token': token };
 
-    if (isObject(body)) {
-      body = querystring.stringify(body);
-      headers['content-type'] = 'application/x-www-form-urlencoded'
+    let method = 'POST'
+    if (body instanceof FormData) {
+      Object.assign(headers, body.getHeaders());
+    } else if (isObject(body)) {
+      body = JSON.stringify(body);
+      headers['Content-Type'] = 'application/json';
+    } else {
+      method = 'GET';
     }
 
-    if (body) method = 'POST';
-
     const request = await fetch(url, { method, body, headers });
+    // console.log(await request.text());
     const result = await request.json();
 
     if (result.status === 'errored') {
