@@ -66,13 +66,13 @@ class Pact extends Kubik {
    * @param  {String} [host=this.host] хост API Viber
    * @return {Promise<Object>} ответ от Pact API
    */
-  async request({ path, body, params, token, host }) {
-    const url = this.getUrl({ path, params, host });
+  async request({ path, body, params, token, host, method, queryParams }) {
+    const url = this.getUrl({ path, params, host, queryParams});
 
     if (!token) token = this.token;
     const headers = { 'X-Private-Api-Token': token };
 
-    let method = 'POST'
+    let method = method || 'POST'
     if (body instanceof FormData) {
       Object.assign(headers, body.getHeaders());
     } else if (isObject(body)) {
@@ -105,8 +105,8 @@ class Pact extends Kubik {
   generateMethod({ kubikName, apiName }) {
     const method = (options) => {
       if (!options) options = {};
-      const { params, body, token, host } = options;
-      return this.request({ path: apiName, body, params, token, host });
+      const { params, body, token, host, queryParams, method } = options;
+      return this.request({ path: apiName, body, params, token, host, queryParams, method });
     };
     set(this, kubikName, method);
   }
