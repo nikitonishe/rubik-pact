@@ -72,7 +72,7 @@ class Pact extends Kubik {
     if (!token) token = this.token;
     const headers = { 'X-Private-Api-Token': token };
 
-    let method = method || 'POST'
+    method = method || 'POST';
     if (body instanceof FormData) {
       Object.assign(headers, body.getHeaders());
     } else if (isObject(body)) {
