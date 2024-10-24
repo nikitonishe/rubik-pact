@@ -3,4 +3,5 @@ module.exports = [
   { kubikName: 'companies.conversations.messages', apiName: 'companies/{{companyId}}/conversations/{{conversationId}}/messages' },
   { kubikName: 'companies.conversations.messages.attachments', apiName: 'companies/{{companyId}}/conversations/{{conversationId}}/messages/attachments' },
   { kubikName: 'companies.conversationsGet', apiName: 'companies/{{companyId}}/conversations/{{conversationId}}' }
+  { kubikName: 'companies.companyId', apiName: 'companies/{{companyId}}' }
 ];

@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const set = require('lodash/set');
 const isObject = require('lodash/isObject');
 const get = require('lodash/get');
+const querystring = require('querystring');
 
 const methods = require('./Pact/methods');
 
@@ -42,7 +43,7 @@ class Pact extends Kubik {
     this.version = this.version || options.version || DEFAULT_VERSION;
   }
 
-  getUrl({ path, params, host }) {
+  getUrl({ path, queryParams, params, host }) {
     if (!host) host = this.host;
     if (!host) throw new TypeError('host is not defined');
 
@@ -51,7 +52,9 @@ class Pact extends Kubik {
     if (params.conversationId) path = path.replace('{{conversationId}}', params.conversationId);
     if (params.channelId) path = path.replace('{{channelId}}', params.channelId);
 
-    return `${host}p1/${path}`;
+    if (!queryParams) queryParams = {};
+
+    return `${host}p1/${path}?${querystring.stringify(queryParams)}`;
   }
 
   /**
