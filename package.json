@@ -1,6 +1,6 @@
 {
   "name": "rubik-pact",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Pact Bot Api kubik for the Rubik application system",
   "main": "classes/Pact.js",
   "author": "ns@indotech.ru",
