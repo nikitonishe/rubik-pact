@@ -72,25 +72,30 @@ class Pact extends Kubik {
     if (!token) token = this.token;
     const headers = { 'X-Private-Api-Token': token };
 
-    method = method || 'POST';
+    if (!method) {
+      if (body) method = 'POST';
+      else method = 'GET';
+    }
+    
     if (body instanceof FormData) {
       Object.assign(headers, body.getHeaders());
     } else if (isObject(body)) {
       body = JSON.stringify(body);
       headers['Content-Type'] = 'application/json';
-    } else {
-      method = 'GET';
     }
 
-    const request = await fetch(url, { method, body, headers });
-    // console.log(await request.text());
-    const result = await request.json();
+    const res = await fetch(url, { method, body, headers });
+    if (res.status !== 200) {
+      throw new Error(`Invalid status ${res.status}`);
+    };
 
-    if (result.status === 'errored') {
-      throw new PactError(`${get(result, 'errors.0.code')} ${get(result, 'errors.0.description')}`);
+    const resBody = await res.json();
+
+    if (resBody.status === 'errored') {
+      throw new PactError(`${get(resBody, 'errors.0.code')} ${get(resBody, 'errors.0.description')}`);
     }
 
-    return result;
+    return resBody;
   }
 
   /**
