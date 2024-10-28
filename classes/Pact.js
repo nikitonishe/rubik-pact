@@ -12,6 +12,7 @@ const PactError = require('../errors/PactError');
 
 const DEFAULT_HOST = 'https://api.pact.im';
 const DEFAULT_VERSION = 'v8.0';
+const SUCCESS_STATUS_REG = /2\d\d/;
 
 /**
  * Кубик для запросов к API Pact
@@ -85,9 +86,9 @@ class Pact extends Kubik {
     }
 
     const res = await fetch(url, { method, body, headers });
-    if (res.status !== 200) {
+    if (!SUCCESS_STATUS_REG.test(`${res.status}`)) {
       throw new Error(`Invalid status ${res.status}`);
-    };
+    }
 
     const resBody = await res.json();
 
