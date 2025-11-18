@@ -11,7 +11,7 @@ const methods = require('./Pact/methods');
 const PactError = require('../errors/PactError');
 
 const DEFAULT_HOST = 'https://api.pact.im';
-const DEFAULT_VERSION = 'v8.0';
+const DEFAULT_VERSION = 'api/p2';
 const SUCCESS_STATUS_REG = /2\d\d/;
 
 /**
@@ -55,7 +55,9 @@ class Pact extends Kubik {
 
     if (!queryParams) queryParams = {};
 
-    return `${host}p1/${path}?${querystring.stringify(queryParams)}`;
+    const query = querystring.stringify(queryParams);
+    const base = `${host.replace(/\/$/, '')}/${this.version.replace(/^\//, '')}/`;
+    return query ? `${base}${path}?${query}` : `${base}${path}`;
   }
 
   /**
@@ -77,7 +79,7 @@ class Pact extends Kubik {
       if (body) method = 'POST';
       else method = 'GET';
     }
-    
+
     if (body instanceof FormData) {
       Object.assign(headers, body.getHeaders());
     } else if (isObject(body)) {
@@ -86,6 +88,7 @@ class Pact extends Kubik {
     }
 
     const res = await fetch(url, { method, body, headers });
+
     if (!SUCCESS_STATUS_REG.test(`${res.status}`)) {
       throw new Error(`Invalid status ${res.status}`);
     }
