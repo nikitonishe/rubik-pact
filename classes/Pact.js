@@ -103,6 +103,44 @@ class Pact extends Kubik {
   }
 
   /**
+   * Привязка вебхука компании через старую версию API (p1)
+   * @param  {Object} options
+   * @param  {Number|String} options.companyId ID компании
+   * @param  {String} options.webhookUrl URL вебхука
+   * @param  {String} [options.token=this.token] токен для запроса
+   * @param  {String} [options.host=this.host] хост API Pact
+   * @return {Promise<Object>} ответ от Pact API
+   */
+  async setCompanyWebhook({ companyId, webhookUrl, token, host }) {
+    if (!companyId) throw new TypeError('companyId is required');
+    if (!webhookUrl) throw new TypeError('webhookUrl is required');
+    const resolvedHost = host || this.host || DEFAULT_HOST;
+    const resolvedToken = token || this.token;
+
+    const base = `${resolvedHost.replace(/\/$/, '')}/p1/`;
+    const path = `companies/${companyId}`;
+    const query = querystring.stringify({ webhook_url: webhookUrl });
+    const url = `${base}${path}?${query}`;
+
+    const headers = { 'X-Private-Api-Token': resolvedToken };
+    const method = 'PUT';
+
+    const res = await fetch(url, { method, headers });
+
+    if (!SUCCESS_STATUS_REG.test(`${res.status}`)) {
+      throw new Error(`Invalid status ${res.status}`);
+    }
+
+    const resBody = await res.json();
+
+    if (resBody.status === 'errored') {
+      throw new PactError(`${get(resBody, 'errors.0.code')} ${get(resBody, 'errors.0.description')}`);
+    }
+
+    return resBody;
+  }
+
+  /**
    * Сгенерировать метод API
    *
    * Создает функцию для запроса к API, привязывает ее к текущему контексту
